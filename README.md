@@ -34,6 +34,7 @@ A Python CLI for creating Google Calendar events via `gws`, with smart time/date
 |---|---|---|
 | **Python 3.14.6+** | Runtime for the script. 3.11+ required for stdlib `tomllib`. | `python --version` |
 | **gws 0.22.5+** | Google Workspace CLI that talks to Google Calendar. | `gws --version` |
+| **uv 0.11.23+** | Installs the bundled `tzdata` dependency for IANA timezone support on every platform. | `uv --version` |
 
 > If `python` resolves to Python 2 on your system, substitute `python3` and update your shell alias accordingly.
 
@@ -89,7 +90,7 @@ event 192100..202701200100 -n "New Year's Eve"
 1. Clone or download the script.
 2. Ensure `gws` is installed and authenticated.
 3. Copy `event.toml` to `~/.config/event/event.toml` (or set `EVENT_CONFIG` env var to a custom path).
-4. Add a shell alias: `alias event="python /path/to/event.py"`
+4. Run it with uv (or add an alias): `alias event="uv run --project /path/to/event-cli /path/to/event-cli/event.py"`
 
 ---
 
