@@ -92,7 +92,13 @@ event 192100..202701200100 -n "New Year's Eve"
 1. Clone or download the script.
 2. Ensure `gws` is installed and authenticated.
 3. Copy `event.toml` to `~/.config/event/event.toml` (or set `EVENT_CONFIG` env var to a custom path).
-4. Run it with uv (or add an alias): `alias event="uv run --project /path/to/event-cli /path/to/event-cli/event.py"`
+4. Run it with uv (or add an alias): `alias event="uv run --project /path/to/event-cli /path/to/event-cli/event.py"` or the following powershell alias:
+ 
+```powershell
+function event {
+    uv run --project "C:\path\to\event-cli" "C:\path\to\event-cli\event.py" @args
+}
+```
 
 ---
 
