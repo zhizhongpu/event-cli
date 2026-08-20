@@ -23,10 +23,10 @@ except ModuleNotFoundError:  # pragma: no cover - prerequisite is Python 3.11+
 
 
 DEFAULTS: dict[str, Any] = {
-    "defaults": {"event_name": "Event", "duration_mins": 60,
+    "defaults": {"duration_mins": 60,
                  "open_browser": True, "calendar_id": "primary"},
     "flags": {
-        "name": ["-n", "--name"], "day": ["-day", "--day"],
+        "day": ["-day", "--day"],
         "location": ["-l", "--location"], "description": ["-des", "--description"],
         "timezone": ["-tz", "--timezone"], "notification": ["-notif", "--notification"],
         "dry_run": ["-dr", "--dry-run"],
@@ -95,9 +95,10 @@ def load_config() -> dict[str, Any]:
 
 def build_parser(config: dict[str, Any]) -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("name", help="event name")
     parser.add_argument("time_range", help="START..END, with END optional")
     flags = config["flags"]
-    required = {"name", "day", "location", "description", "timezone", "notification", "dry_run"}
+    required = {"day", "location", "description", "timezone", "notification", "dry_run"}
     if set(flags) != required:
         missing = ", ".join(sorted(required - set(flags)))
         extra = ", ".join(sorted(set(flags) - required))
@@ -119,7 +120,6 @@ def build_parser(config: dict[str, Any]) -> argparse.ArgumentParser:
 def terminal_docs(config: dict[str, Any]) -> str:
     """Return the compact reference shown by the help flags."""
     flags = config["flags"]
-    name = flags["name"][0]
     day = flags["day"][0]
     location = flags["location"][0]
     description = flags["description"][0]
@@ -130,7 +130,7 @@ def terminal_docs(config: dict[str, Any]) -> str:
     return f"""event - create a Google Calendar event
 
 Grammar:
-  event START[..END] [{name} NAME] [{day} DATE] [{location} LOCATION] [{description} DESCRIPTION]
+  event NAME START[..END] [{day} DATE] [{location} LOCATION] [{description} DESCRIPTION]
         [{timezone} ZONE] [{notification} MINUTES] [{dry_run}]
   TIME = [DD|MMDD|YYMMDD|YYYYMMDD]HHMM[ZONE]
 
@@ -138,9 +138,9 @@ Rules: HHMM uses 24-hour time; omit END for the configured default duration.
        Use either inline dates/zones or {day}/{timezone}, not both. Zones: {zones}.
 
 Examples:
-  event 1900.. -n "Standup"
-  event 2100..2300 -n "Movie Night"
-  event 09231900..09232100PT -n "Call" -dr
+  event "Standup" 1900..
+  event "Movie Night" 2100..2300
+  event "Call" 09231900..09232100PT -dr
 """
 
 
@@ -260,7 +260,7 @@ def make_payload(args: argparse.Namespace, config: dict[str, Any]) -> tuple[dict
         raise EventError("Invalid range: start must be earlier than end.")
     defaults = config["defaults"]
     payload: dict[str, Any] = {
-        "summary": args.name if args.name is not None else defaults.get("event_name", "Event"),
+        "summary": args.name,
         "start": {"dateTime": start.value.isoformat(timespec="seconds"), "timeZone": start.zone_name},
         "end": {"dateTime": end.value.isoformat(timespec="seconds"), "timeZone": end.zone_name},
     }

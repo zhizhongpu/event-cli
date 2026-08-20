@@ -1,11 +1,9 @@
 [defaults]
-event_name = "Event"
 duration_mins = 60
 open_browser = true
 calendar_id = "primary"
 
 [flags]
-name = ["-n", "--name"]
 day = ["-day", "--day"]
 location = ["-l", "--location"]
 description = ["-des", "--description"]

@@ -45,44 +45,44 @@ Run `event --help` (or `event -h`) for a concise terminal grammar and example re
 ## Quick Examples
 
 ```bash
-# Minimal: event today 19:00–20:00 (default 1hr), name "Event"
-event 1900..
+# Minimal: named event today 19:00–20:00 (default 1hr)
+event "Event" 1900..
 
 # Named event, explicit end time
-event 2100..2300 -n "Movie Night"
+event "Movie Night" 2100..2300
 
 # With location and description
-event 1900..2100 -n "Dinner" -l "Snooze Restaurant" -des "Birthday dinner for Alex"
+event "Dinner" 1900..2100 -l "Snooze Restaurant" -des "Birthday dinner for Alex"
 
 # Specific day this month (soonest upcoming 25th)
-event 1900..2100 -n "Team Sync" -day 25
+event "Team Sync" 1900..2100 -day 25
 
 # Specific month+day (soonest upcoming Sep 23)
-event 1400..1500 -n "Flight" -day 0923
+event "Flight" 1400..1500 -day 0923
 
 # Specific full date
-event 0900..1700 -n "Conference" -day 20260923
+event "Conference" 0900..1700 -day 20260923
 
 # Cross-timezone range
-event 1900MT..2100PT -n "Call with SF team"
+event "Call with SF team" 1900MT..2100PT
 
 # Global timezone override
-event 1900..2100 -n "Call" -tz PT
+event "Call" 1900..2100 -tz PT
 
 # Inline date inside time string (no -day needed)
-event 202609231900..202609232100 -n "Multi-day boundary"
+event "Multi-day boundary" 202609231900..202609232100
 
 # With notification
-event 1900.. -n "Standup" -notif 10
+event "Standup" 1900.. -notif 10
 
 # Dry run — prints gws command, does not submit, does not open browser
-event 1900..2100 -n "Test" -dr
+event "Test" 1900..2100 -dr
 
 # Full example
-event 1745..2100 -n "Gaming" -day 21 -l "Home" -des "Play AoE2" -tz MT -notif 15
+event "Gaming" 1745..2100 -day 21 -l "Home" -des "Play AoE2" -tz MT -notif 15
 
 # Cross-date: today 21:00 to 2027-01-20 01:00
-event 192100..202701200100 -n "New Year's Eve"
+event "New Year's Eve" 192100..202701200100
 ```
 
 ---
@@ -106,8 +106,8 @@ function event {
 
 | Flag | Long form | Description |
 |------|-----------|-------------|
-| *(positional)* | | Time range string (required). See [Time & Date Syntax](#time--date-syntax). |
-| `-n` | `--name` | Event name. Default: `"Event"`. |
+| *(first positional)* | | Event name (required). Quote names containing spaces. |
+| *(second positional)* | | Time range string (required). See [Time & Date Syntax](#time--date-syntax). |
 | `-day` | `--day` | Date shared by both times. See [Date Prefix](#date-prefix). |
 | `-l` | `--location` | Location string or URL. Free text. |
 | `-des` | `--description` | Event description. Free text. |
@@ -220,7 +220,7 @@ Date and time are concatenated with no separator. Either or both sides of `..` m
 
 | Parameter | Default | Configurable in TOML |
 |-----------|---------|----------------------|
-| Event name | `"Event"` | Yes |
+| Event name | Required first positional argument | No |
 | Date | Today (system date) | No |
 | Timezone | System timezone | No |
 | Duration (end omitted) | 60 minutes | Yes |
@@ -246,7 +246,7 @@ Date and time are concatenated with no separator. Either or both sides of `..` m
 ## Dry Run
 
 ```bash
-event 1900..2100 -n "Test Event" -dr
+event "Test Event" 1900..2100 -dr
 ```
 
 Prints the fully-formed `gws` command to stdout. Does **not** submit. Does **not** open browser.
@@ -265,7 +265,7 @@ Example output:
 ## Notification
 
 ```bash
-event 1900.. -n "Standup" -notif 10
+event "Standup" 1900.. -notif 10
 ```
 
 Sets a single popup reminder 10 minutes before the event. Adds to the `gws` JSON body:
@@ -311,13 +311,11 @@ Located at `~/.config/event/event.toml` (or path in `EVENT_CONFIG` env var).
 
 ```toml
 [defaults]
-event_name    = "Event"
 duration_mins = 60
 open_browser  = true
 calendar_id   = "primary"
 
 [flags]
-name         = ["-n", "--name"]
 day          = ["-day", "--day"]
 location     = ["-l", "--location"]
 description  = ["-des", "--description"]
