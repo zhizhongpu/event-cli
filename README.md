@@ -46,40 +46,40 @@ Run `event --help` (or `event -h`) for a concise terminal grammar and example re
 
 ```bash
 # Minimal: named event today 19:00–20:00 (default 1hr)
-event "Event" 1900..
+event Event 1900..
 
 # Named event, explicit end time
 event "Movie Night" 2100..2300
 
 # With location and description
-event "Dinner" 1900..2100 -l "Snooze Restaurant" -des "Birthday dinner for Alex"
+event Dinner 1900..2100 -l "Snooze Restaurant" -des "Birthday dinner for Alex"
 
 # Specific day this month (soonest upcoming 25th)
 event "Team Sync" 1900..2100 -day 25
 
 # Specific month+day (soonest upcoming Sep 23)
-event "Flight" 1400..1500 -day 0923
+event Flight 1400..1500 -day 0923
 
 # Specific full date
-event "Conference" 0900..1700 -day 20260923
+event Conference 0900..1700 -day 20260923
 
 # Cross-timezone range
 event "Call with SF team" 1900MT..2100PT
 
 # Global timezone override
-event "Call" 1900..2100 -tz PT
+event Call 1900..2100 -tz PT
 
 # Inline date inside time string (no -day needed)
 event "Multi-day boundary" 202609231900..202609232100
 
 # With notification
-event "Standup" 1900.. -notif 10
+event Standup 1900.. -notif 10
 
 # Dry run — prints gws command, does not submit, does not open browser
-event "Test" 1900..2100 -dr
+event Test 1900..2100 -dr
 
 # Full example
-event "Gaming" 1745..2100 -day 21 -l "Home" -des "Play AoE2" -tz MT -notif 15
+event Gaming 1745..2100 -day 21 -l "Home" -des "Play AoE2" -tz MT -notif 15
 
 # Cross-date: today 21:00 to 2027-01-20 01:00
 event "New Year's Eve" 192100..202701200100
@@ -265,7 +265,7 @@ Example output:
 ## Notification
 
 ```bash
-event "Standup" 1900.. -notif 10
+event Standup 1900.. -notif 10
 ```
 
 Sets a single popup reminder 10 minutes before the event. Adds to the `gws` JSON body:

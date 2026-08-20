@@ -138,9 +138,9 @@ Rules: HHMM uses 24-hour time; omit END for the configured default duration.
        Use either inline dates/zones or {day}/{timezone}, not both. Zones: {zones}.
 
 Examples:
-  event "Standup" 1900..
+  event Standup 1900..
   event "Movie Night" 2100..2300
-  event "Call" 09231900..09232100PT -dr
+  event Call 09231900..09232100PT -dr
 """
 
 
