@@ -2,6 +2,8 @@
 
 A Python CLI for creating Google Calendar events via `gws`, with smart time/date parsing and optional AI integration.
 
+Run `event --help` (or `event -h`) for a concise terminal grammar and example reference.
+
 ---
 
 ## Table of Contents

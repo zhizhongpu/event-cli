@@ -116,6 +116,34 @@ def build_parser(config: dict[str, Any]) -> argparse.ArgumentParser:
     return parser
 
 
+def terminal_docs(config: dict[str, Any]) -> str:
+    """Return the compact reference shown by the help flags."""
+    flags = config["flags"]
+    name = flags["name"][0]
+    day = flags["day"][0]
+    location = flags["location"][0]
+    description = flags["description"][0]
+    timezone = flags["timezone"][0]
+    notification = flags["notification"][0]
+    dry_run = flags["dry_run"][0]
+    zones = ", ".join(sorted(str(zone).upper() for zone in config["timezones"]))
+    return f"""event - create a Google Calendar event
+
+Grammar:
+  event START[..END] [{name} NAME] [{day} DATE] [{location} LOCATION] [{description} DESCRIPTION]
+        [{timezone} ZONE] [{notification} MINUTES] [{dry_run}]
+  TIME = [DD|MMDD|YYMMDD|YYYYMMDD]HHMM[ZONE]
+
+Rules: HHMM uses 24-hour time; omit END for the configured default duration.
+       Use either inline dates/zones or {day}/{timezone}, not both. Zones: {zones}.
+
+Examples:
+  event 1900.. -n "Standup"
+  event 2100..2300 -n "Movie Night"
+  event 09231900..09232100PT -n "Call" -dr
+"""
+
+
 def parse_time_part(token: str, zones: dict[str, str]) -> TimePart:
     match = re.fullmatch(r"(\d+)([A-Za-z]+)?", token)
     if not match:
@@ -267,7 +295,11 @@ def display_time(value: datetime) -> str:
 def main(argv: list[str] | None = None) -> int:
     try:
         config = load_config()
-        args = build_parser(config).parse_args(argv)
+        command_args = sys.argv[1:] if argv is None else argv
+        if command_args in (["-h"], ["--help"]):
+            print(terminal_docs(config), end="")
+            return 0
+        args = build_parser(config).parse_args(command_args)
         payload, start, end = make_payload(args, config)
         calendar_id = str(config["defaults"].get("calendar_id", "primary"))
         command = gws_command(payload, calendar_id)
