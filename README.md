@@ -189,12 +189,13 @@ A date can be embedded directly before the 4-digit time with no separator. The p
 
 ### Time Range (`..`)
 
-`..` separates start and end. End may be omitted to use default duration.
+`..` separates start and end. The separator and end may both be omitted to use the default duration.
 
 | Input | Meaning |
 |-------|---------|
 | `1900..2100` | 19:00 → 21:00 (system tz) |
 | `1900..` | 19:00 → 20:00 (default duration from TOML, default 60 min) |
+| `1900` | 19:00 → 20:00 (default duration from TOML, default 60 min) |
 | `1900PT..2100` | 19:00 PT → 21:00 system tz |
 | `1900MT..2100PT` | 19:00 MT → 21:00 PT |
 | `1945..2014` | 19:45 → 20:14 |

@@ -96,7 +96,7 @@ def load_config() -> dict[str, Any]:
 def build_parser(config: dict[str, Any]) -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("name", help="event name")
-    parser.add_argument("time_range", help="START..END, with END optional")
+    parser.add_argument("time_range", help="START or START..END, with END optional")
     flags = config["flags"]
     required = {"day", "location", "description", "timezone", "notification", "dry_run"}
     if set(flags) != required:
@@ -134,7 +134,7 @@ Grammar:
         [{timezone} ZONE] [{notification} MINUTES] [{dry_run}]
   TIME = [DD|MMDD|YYMMDD|YYYYMMDD]HHMM[ZONE]
 
-Rules: HHMM uses 24-hour time; omit END for the configured default duration.
+Rules: HHMM uses 24-hour time; omit END and its separator for the configured default duration.
        Use either inline dates/zones or {day}/{timezone}, not both. Zones: {zones}.
 
 Examples:
@@ -229,9 +229,10 @@ def resolve(part: TimePart, shared_date: date | None, global_zone: str | None,
 
 
 def make_payload(args: argparse.Namespace, config: dict[str, Any]) -> tuple[dict[str, Any], ResolvedTime, ResolvedTime]:
-    if args.time_range.count("..") != 1:
-        raise EventError("Time range must contain exactly one '..' separator.")
-    start_text, end_text = args.time_range.split("..")
+    separator_count = args.time_range.count("..")
+    if separator_count > 1:
+        raise EventError("Time range may contain at most one '..' separator.")
+    start_text, end_text = args.time_range.split("..") if separator_count else (args.time_range, "")
     if not start_text:
         raise EventError("A start time is required.")
     zones = config["timezones"]
