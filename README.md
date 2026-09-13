@@ -27,6 +27,7 @@ Run `event --help` (or `event -h`) for a concise terminal grammar and example re
   - [Browser Behaviour](#browser-behaviour)
   - [Output](#output)
   - [TOML Config](#toml-config)
+  - [Troubleshoot](#troubleshoot)
 
 ---
 
@@ -334,3 +335,9 @@ GMT = "UTC"
 ```
 
 > To rename a flag, edit its list under `[flags]`. The first entry is the short form, second is the long form. No flag names are hardcoded in the source.
+
+## Troubleshoot
+
+> error[auth]: Authentication failed: Failed to get token: Server error: invalid_grant: Token has been expired or revoked.: invalid_grant: Token has been expired or revoked.
+
+`gws auth login`
